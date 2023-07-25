@@ -9,8 +9,8 @@ pub enum Err{
     InfiniteLoop
 }
 
-const True: Ast = Ast::Atom(0);
-const False: Ast = Ast::Atom(1);
+const TRUE: Ast = Ast::Atom(0);
+const FALSE: Ast = Ast::Atom(1);
 
 type ReduceResult = Result<Ast, Err>;
 
@@ -27,15 +27,15 @@ pub fn reduce_deep(ast: Ast) -> ReduceResult {
 
 pub fn reduce(ast: Ast) -> ReduceResult {   
 
-    reduce!("?[a b]" Ok(True.into()));
-    reduce!("?a" Ok(False.into()));
+    reduce!("?[a b]" Ok(TRUE.into()));
+    reduce!("?a" Ok(FALSE.into()));
 
     crash!("+[a b]");
 
     reduce!("+a" Ok(increment(&a)));
 
-    reduce!("=[a a]" Ok(True.into()));
-    reduce!("=[a b]" Ok(False.into()));
+    reduce!("=[a a]" Ok(TRUE.into()));
+    reduce!("=[a b]" Ok(FALSE.into()));
 
     crash!("/[0 a]");
     reduce!("/[1 a]" Ok(a));
@@ -129,7 +129,7 @@ fn _is_match(subject: &Ast, test: &Ast, assignments: &mut [Ast; 4]) -> bool {
             assign(assignments, name, atom(*val))
         },
         (Ast::Variable(name), Ast::Cell(c)) => {
-            assign(assignments, name, cell(c.head.clone(), c.tail.clone()))
+            assign(assignments, name,  Ast::Cell(c.clone()))
         },
         (Ast::Variable(_), _) => false,
         (Ast::Op(op_test, arg_test), Ast::Op(op_subject, arg_subject)) => op_test == op_subject && _is_match(&arg_subject, &arg_test, assignments),
@@ -182,7 +182,7 @@ mod test {
     }
 
     #[test]
-    fn test_reduce_completely() {
+    fn test_reduce() {
         assert_reduces_to("1", "1");
 
         assert_reduces_to("?1", "1");
@@ -220,8 +220,6 @@ mod test {
 
         assert_reduces_to("/[7 [1 [2 3]]]", "3");
         assert_reduces_to("#[6 5 1 2 3]", "[1 [5 3]]");
-
-
     }
 
     fn assert_reduces_to(input: &str, output: &str) {
