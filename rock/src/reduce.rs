@@ -111,13 +111,8 @@ mod test {
 
     #[test]
     fn test_question() {
-        let noun: Noun = "[1 2]".try_into().unwrap();
-        let result = question(noun);
-        assert_eq!(result, TRUE);
-
-        let noun: Noun = "1".try_into().unwrap();
-        let result = question(noun);
-        assert_eq!(result, FALSE);
+        assert_op("[1 2]", "0", question);
+        assert_op("1", "1", question);
     }
 
     #[test]
