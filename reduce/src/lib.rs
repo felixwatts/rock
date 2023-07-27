@@ -1,3 +1,4 @@
+use lazy_static::lazy_static;
 use parse::parse_ast;
 use macros::{ast, ast_test, reduce, crash};
 use std::fmt::Display;
@@ -41,7 +42,7 @@ pub fn reduce(ast: Ast) -> ReduceResult {
     reduce!("/[1 a]" Ok(a));
     reduce!("/[2 a b]" Ok(a));
     reduce!("/[3 a b]" Ok(b));    
-    reduce!("/[a [b c]] " {
+    reduce!("/[a [b c]]" {
         match a {
             Ast::Atom(val) => {
                 let a = atom(val/2);
@@ -139,7 +140,7 @@ fn _is_match(subject: &Ast, test: &Ast, assignments: &mut [Ast; 4]) -> bool {
     }
 }
 
-fn assign(assignments: &mut [Ast; 4], name: &str, val: Ast) -> bool {
+fn assign(assignments: &mut [Ast; 4], name: &char, val: Ast) -> bool {
     let index = variable_name_to_index(name);
     match &assignments[index] {
         Ast::Atom(0) => {
@@ -150,12 +151,12 @@ fn assign(assignments: &mut [Ast; 4], name: &str, val: Ast) -> bool {
     }
 }
 
-fn variable_name_to_index(name: &str) -> usize {
+fn variable_name_to_index(name: &char) -> usize {
     match name {
-        "a" => 0,
-        "b" => 1,
-        "c" => 2,
-        "d" => 3,
+        'a' => 0,
+        'b' => 1,
+        'c' => 2,
+        'd' => 3,
         _ => panic!("Unexpected variable name")
     }
 }
