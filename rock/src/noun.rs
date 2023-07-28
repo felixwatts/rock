@@ -14,11 +14,11 @@ pub enum Noun {
     Cell(Rc<Cell>),
 }
 
-pub(crate) fn cell(head: Noun, tail: Noun) -> Noun {
+pub fn cell(head: Noun, tail: Noun) -> Noun {
     Noun::Cell(Rc::new(Cell { head, tail }))
 }
 
-pub(crate) fn atom(val: u32) -> Noun {
+pub fn atom(val: u32) -> Noun {
     Noun::Atom(val)
 }
 

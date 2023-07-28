@@ -21,28 +21,28 @@ fn to_bool(value: bool) -> ReduceResult {
     }
 }
 
-fn inc(noun: Noun) -> ReduceResult {
+pub fn inc(noun: Noun) -> ReduceResult {
     match noun {
         Noun::Atom(val) => Ok(Noun::Atom(val + 1)),
         Noun::Cell(_) => INFINITE_LOOP,
     }
 }
 
-fn eq(noun: Noun) -> ReduceResult {
+pub fn eq(noun: Noun) -> ReduceResult {
     match noun {
         Noun::Cell(cell) => to_bool(cell.head == cell.tail),
         Noun::Atom(_) => INFINITE_LOOP,
     }
 }
 
-fn question(noun: Noun) -> ReduceResult {
+pub fn question(noun: Noun) -> ReduceResult {
     match noun {
         Noun::Cell(_) => TRUE,
         Noun::Atom(_) => FALSE,
     }
 }
 
-fn slash(noun: Noun) -> ReduceResult {
+pub fn slash(noun: Noun) -> ReduceResult {
     match noun {
         Noun::Cell(c) => match (&c.head, &c.tail) {
             (Noun::Atom(0), _) => INFINITE_LOOP,
@@ -60,7 +60,7 @@ fn slash(noun: Noun) -> ReduceResult {
     }
 }
 
-fn hash(noun: Noun) -> ReduceResult {
+pub fn hash(noun: Noun) -> ReduceResult {
     match noun {
         Noun::Cell(root_cell) => match (&root_cell.head, &root_cell.tail) {
             (Noun::Atom(0), _) => INFINITE_LOOP,
@@ -84,7 +84,7 @@ fn hash(noun: Noun) -> ReduceResult {
     }
 }
 
-pub(crate) fn star(subject: Noun) -> ReduceResult {
+pub fn star(subject: Noun) -> ReduceResult {
     reduce!([a [b c] d] Ok(expr!([*[a b c] *[a d]])));
     reduce!([a 0 b] Ok(expr!(/[b a])));
     reduce!([_a 1 b] Ok(expr!(b)));
