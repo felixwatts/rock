@@ -93,7 +93,7 @@ impl Cell {
         let head_code = self.head.to_constructor_code();
         let tail_code = self.tail.to_constructor_code();
         quote! {
-            cell(#head_code, #tail_code)
+            Noun::cell(#head_code, #tail_code)
         }
     }
 }
@@ -101,7 +101,7 @@ impl Cell {
 impl Expr {
     fn to_constructor_code(&self) -> proc_macro2::TokenStream {
         match self {
-            Expr::Atom(lit_int) => quote! { atom(#lit_int) },
+            Expr::Atom(lit_int) => quote! {  Noun::atom(#lit_int) },
             Expr::Variable(ident) => quote! { #ident.clone() },
             Expr::Cell(cell) => cell.to_constructor_code(),
             Expr::Op(op) => op.to_constructor_code(),
@@ -110,7 +110,7 @@ impl Expr {
 
     fn to_test_variable_declaration_code(&self) -> proc_macro2::TokenStream {
         match self {
-            Expr::Variable(ident) => quote! { let mut #ident = atom(0); },
+            Expr::Variable(ident) => quote! { let mut #ident =  Noun::atom(0); },
             Expr::Cell(cell) => {
                 let head = cell.head.to_test_variable_declaration_code();
                 let tail = cell.tail.to_test_variable_declaration_code();

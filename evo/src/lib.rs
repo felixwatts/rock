@@ -1,7 +1,6 @@
 use rand::distributions::{Uniform, WeightedIndex};
 use rock::noun::Noun;
 use rock::reduce::{Result, hash, slash};
-use rock::noun::{cell, atom};
 use macros::expr;
 use rand::prelude::*;
 use lazy_static::lazy_static;
@@ -34,19 +33,19 @@ fn random_noun() -> Noun {
 }
 
 fn random_atom() -> Noun {
-    atom(rand::random())
+    Noun::atom(rand::random())
 }
 
 fn random_cell() -> Noun {
     let head = random_noun();
     let tail = random_noun();
-    cell(head, tail)
+    Noun::cell(head, tail)
 }
 
 fn random_address_of(noun: &Noun) -> Noun {
     let len = len(noun);
     let addr = rand::thread_rng().gen_range(1..=len);
-    atom(addr)
+    Noun::atom(addr)
 }
 
 fn mutate(noun: Noun) -> Result {
@@ -76,7 +75,7 @@ fn fitness(noun: &Noun) -> u32 {
     let mut fitness = 0;
     for n in 0..10 {
         let target = n*n;
-        let actual = run(noun.clone(), atom(n)); // TODO
+        let actual = run(noun.clone(), Noun::atom(n)); // TODO
         let diff = match actual {
             Err(_) => return u32::MAX,
             Ok(actual) => match actual {
@@ -112,7 +111,7 @@ impl Gen {
             let mother = self.select();
             let father = self.select();
 
-            let child = cross(mother, father).unwrap_or(atom(0));
+            let child = cross(mother, father).unwrap_or(Noun::atom(0));
             next.push(child);
         }
 
@@ -120,7 +119,7 @@ impl Gen {
     }
 
     fn rank(&mut self) {
-        self.0.sort_by_cached_key(|i| fitness(i));
+        self.0.sort_by_cached_key(fitness);
     }
 
     fn select(&self) -> &Noun {

@@ -1,4 +1,4 @@
-use crate::noun::{atom, cell, Noun};
+use crate::noun::Noun;
 use macros::{expr, reduce};
 
 #[derive(Debug, PartialEq)]
@@ -58,15 +58,15 @@ pub fn hash(noun: Noun) -> Result {
             (Noun::Atom(0), _) => INFINITE_LOOP,
             (Noun::Atom(1), Noun::Cell(tail_cell)) => Ok(tail_cell.head.clone()),
             (Noun::Atom(n), Noun::Cell(tail_cell)) => {
-                let a = atom(n / 2);
+                let a = Noun::atom(n / 2);
                 let b = tail_cell.head.clone();
                 let c = tail_cell.tail.clone();
 
                 if n % 2 == 0 {
-                    let a_plus_a_plus_1 = atom(n + 1);
+                    let a_plus_a_plus_1 =  Noun::atom(n + 1);
                     Ok(expr!(#[a [[b /[a_plus_a_plus_1 c]] c]]))
                 } else {
-                    let a_plus_a = atom(n - 1);
+                    let a_plus_a =  Noun::atom(n - 1);
                     Ok(expr!(#[a [[/[a_plus_a c] b] c]]))
                 }
             }

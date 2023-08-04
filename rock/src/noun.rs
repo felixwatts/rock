@@ -14,12 +14,14 @@ pub enum Noun {
     Cell(Rc<Cell>),
 }
 
-pub fn cell(head: Noun, tail: Noun) -> Noun {
-    Noun::Cell(Rc::new(Cell { head, tail }))
-}
+impl Noun {
+    pub fn atom(val: u32) -> Self {
+        Noun::Atom(val)
+    }
 
-pub fn atom(val: u32) -> Noun {
-    Noun::Atom(val)
+    pub fn cell(head: Noun, tail: Noun) -> Self {
+        Noun::Cell(Rc::new(Cell { head, tail }))
+    }
 }
 
 impl Debug for Noun {

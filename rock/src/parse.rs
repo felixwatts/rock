@@ -23,7 +23,7 @@ impl TryFrom<&str> for Noun {
 }
 
 fn parse_noun(input: &str) -> IResult<&str, Noun> {
-    let (remaining_input, _) = take_while(|c: char| c.is_whitespace())(input)?;
+    let (remaining_input, _) = take_while(char::is_whitespace)(input)?;
     alt((parse_atom, parse_list))(remaining_input)
 }
 
@@ -56,7 +56,7 @@ fn to_cell(nouns: &[Noun]) -> Cell {
 
 #[cfg(test)]
 mod test {
-    use crate::noun::{atom, cell};
+    use crate::noun::Noun;
 
     use super::*;
 
@@ -68,10 +68,10 @@ mod test {
 
         let (remaining_input, ast) = parse_noun("[1 2]").unwrap();
         assert_eq!("", remaining_input);
-        assert_eq!(cell(atom(1), atom(2)), ast);
+        assert_eq!(Noun::cell(Noun::atom(1), Noun::atom(2)), ast);
 
         let (remaining_input, ast) = parse_noun("[1 2 3]").unwrap();
         assert_eq!("", remaining_input);
-        assert_eq!(cell(atom(1), cell(atom(2), atom(3))), ast);
+        assert_eq!(Noun::cell(Noun::atom(1), Noun::cell(Noun::atom(2), Noun::atom(3))), ast);
     }
 }
