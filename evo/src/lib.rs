@@ -1,6 +1,6 @@
 use rand::distributions::{Uniform, WeightedIndex};
 use rock::noun::Noun;
-use rock::reduce::{ReduceResult, hash, slash};
+use rock::reduce::{Result, hash, slash};
 use rock::noun::{cell, atom};
 use macros::expr;
 use rand::prelude::*;
@@ -14,7 +14,7 @@ lazy_static! {
     static ref SELECTION_DIST: WeightedIndex<usize> = WeightedIndex::new(&mut (1..=POPULATION).rev()).unwrap();
 }
 
-fn run(f: Noun, a: Noun) -> ReduceResult {
+fn run(f: Noun, a: Noun) -> Result {
     let fun = expr!([a [f [0 1]]]);
     rock::nock(fun)
 }
@@ -49,7 +49,7 @@ fn random_address_of(noun: &Noun) -> Noun {
     atom(addr)
 }
 
-fn mutate(noun: Noun) -> ReduceResult {
+fn mutate(noun: Noun) -> Result {
     if RANGE_ZERO_ONE.sample(&mut rand::thread_rng()) < MUT_RATE {
         let addr = random_address_of(&noun);
         let repl = random_noun();
@@ -59,7 +59,7 @@ fn mutate(noun: Noun) -> ReduceResult {
     }
 }
 
-fn cross(mother: &Noun, father: &Noun) -> ReduceResult {
+fn cross(mother: &Noun, father: &Noun) -> Result {
     let addr_m = random_address_of(mother);
     let addr_f = random_address_of(father);
 

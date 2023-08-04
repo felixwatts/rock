@@ -1,10 +1,10 @@
 use noun::Noun;
-use reduce::ReduceResult;
+use reduce::Result;
 
 pub mod noun;
 pub mod parse;
 pub mod reduce;
 
-pub fn nock(noun: Noun) -> ReduceResult {
+pub fn nock(noun: Noun) -> Result {
     reduce::star(noun)
 }

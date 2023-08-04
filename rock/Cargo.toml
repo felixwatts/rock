@@ -7,5 +7,4 @@ edition = "2021"
 
 [dependencies]
 macros = { path = "../macros" }
-lazy_static = "1.4.0"
 nom = "7.1.3"

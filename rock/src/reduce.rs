@@ -6,43 +6,35 @@ pub enum Err {
     InfiniteLoop,
 }
 
-pub type ReduceResult = Result<Noun, Err>;
+pub type Result = std::result::Result<Noun, Err>;
 
-const INFINITE_LOOP: ReduceResult = ReduceResult::Err(Err::InfiniteLoop);
+const INFINITE_LOOP: Result = Result::Err(Err::InfiniteLoop);
 
-const TRUE: ReduceResult = Ok(Noun::Atom(0));
-const FALSE: ReduceResult = Ok(Noun::Atom(1));
+const TRUE: Result = Ok(Noun::Atom(0));
+const FALSE: Result = Ok(Noun::Atom(1));
 
-fn to_bool(value: bool) -> ReduceResult {
-    if value {
-        TRUE
-    } else {
-        FALSE
-    }
-}
-
-pub fn inc(noun: Noun) -> ReduceResult {
+pub fn inc(noun: Noun) -> Result {
     match noun {
         Noun::Atom(val) => Ok(Noun::Atom(val + 1)),
         Noun::Cell(_) => INFINITE_LOOP,
     }
 }
 
-pub fn eq(noun: Noun) -> ReduceResult {
+pub fn eq(noun: Noun) -> Result {
     match noun {
-        Noun::Cell(cell) => to_bool(cell.head == cell.tail),
+        Noun::Cell(cell) => if cell.head == cell.tail { TRUE } else { FALSE }
         Noun::Atom(_) => INFINITE_LOOP,
     }
 }
 
-pub fn question(noun: Noun) -> ReduceResult {
+pub fn question(noun: Noun) -> Result {
     match noun {
         Noun::Cell(_) => TRUE,
         Noun::Atom(_) => FALSE,
     }
 }
 
-pub fn slash(noun: Noun) -> ReduceResult {
+pub fn slash(noun: Noun) -> Result {
     match noun {
         Noun::Cell(c) => match (&c.head, &c.tail) {
             (Noun::Atom(0), _) => INFINITE_LOOP,
@@ -60,7 +52,7 @@ pub fn slash(noun: Noun) -> ReduceResult {
     }
 }
 
-pub fn hash(noun: Noun) -> ReduceResult {
+pub fn hash(noun: Noun) -> Result {
     match noun {
         Noun::Cell(root_cell) => match (&root_cell.head, &root_cell.tail) {
             (Noun::Atom(0), _) => INFINITE_LOOP,
@@ -84,7 +76,7 @@ pub fn hash(noun: Noun) -> ReduceResult {
     }
 }
 
-pub fn star(subject: Noun) -> ReduceResult {
+pub fn star(subject: Noun) -> Result {
     reduce!([a [b c] d] Ok(expr!([*[a b c] *[a d]])));
     reduce!([a 0 b] Ok(expr!(/[b a])));
     reduce!([_a 1 b] Ok(expr!(b)));
@@ -156,14 +148,14 @@ mod test {
         assert_crash("42", hash);
     }
 
-    fn assert_op(noun: &str, expected: &str, f: fn(Noun) -> ReduceResult) {
+    fn assert_op(noun: &str, expected: &str, f: fn(Noun) -> Result) {
         let noun: Noun = noun.try_into().unwrap();
         let actual = f(noun).unwrap();
         let expected: Noun = expected.try_into().unwrap();
         assert_eq!(actual, expected);
     }
 
-    fn assert_crash(noun: &str, f: fn(Noun) -> ReduceResult) {
+    fn assert_crash(noun: &str, f: fn(Noun) -> Result) {
         let noun: Noun = noun.try_into().unwrap();
         f(noun).expect_err("Expected crash");
     }
