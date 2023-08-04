@@ -33,7 +33,7 @@ fn random_noun() -> Noun {
 }
 
 fn random_atom() -> Noun {
-    Noun::atom(rand::random())
+    Noun::Atom(rand::random())
 }
 
 fn random_cell() -> Noun {
@@ -45,7 +45,7 @@ fn random_cell() -> Noun {
 fn random_address_of(noun: &Noun) -> Noun {
     let len = len(noun);
     let addr = rand::thread_rng().gen_range(1..=len);
-    Noun::atom(addr)
+    Noun::Atom(addr)
 }
 
 fn mutate(noun: Noun) -> Result {
@@ -75,7 +75,7 @@ fn fitness(noun: &Noun) -> u32 {
     let mut fitness = 0;
     for n in 0..10 {
         let target = n*n;
-        let actual = run(noun.clone(), Noun::atom(n)); // TODO
+        let actual = run(noun.clone(), Noun::Atom(n)); // TODO
         let diff = match actual {
             Err(_) => return u32::MAX,
             Ok(actual) => match actual {
@@ -111,7 +111,7 @@ impl Gen {
             let mother = self.select();
             let father = self.select();
 
-            let child = cross(mother, father).unwrap_or(Noun::atom(0));
+            let child = cross(mother, father).unwrap_or(Noun::Atom(0));
             next.push(child);
         }
 

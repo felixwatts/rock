@@ -15,10 +15,6 @@ pub enum Noun {
 }
 
 impl Noun {
-    pub fn atom(val: u32) -> Self {
-        Noun::Atom(val)
-    }
-
     pub fn cell(head: Noun, tail: Noun) -> Self {
         Noun::Cell(Rc::new(Cell { head, tail }))
     }

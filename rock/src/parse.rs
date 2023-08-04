@@ -71,11 +71,11 @@ mod test {
 
         let (remaining_input, ast) = parse_noun("[1 2]").unwrap();
         assert_eq!("", remaining_input);
-        assert_eq!(Noun::cell(Noun::atom(1), Noun::atom(2)), ast);
+        assert_eq!(Noun::cell(Noun::Atom(1), Noun::Atom(2)), ast);
 
         let (remaining_input, ast) = parse_noun("[1 2 3]").unwrap();
         assert_eq!("", remaining_input);
-        assert_eq!(Noun::cell(Noun::atom(1), Noun::cell(Noun::atom(2), Noun::atom(3))), ast);
+        assert_eq!(Noun::cell(Noun::Atom(1), Noun::cell(Noun::Atom(2), Noun::Atom(3))), ast);
 
         let result: Result<Noun, String> = "4294967296".try_into(); // too big for u32
         result.expect_err("Parse should have failed");
