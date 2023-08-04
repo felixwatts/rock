@@ -174,17 +174,13 @@ impl Parse for Expr {
             Ok(Expr::Atom(input.parse()?))
         } else if lookahead.peek(syn::Ident) {
             Ok(Expr::Variable(input.parse()?))
-        } else if lookahead.peek(Token![*]) {
-            Ok(Expr::Op(input.parse()?))
-        } else if lookahead.peek(Token![/]) {
-            Ok(Expr::Op(input.parse()?))
-        } else if lookahead.peek(Token![=]) {
-            Ok(Expr::Op(input.parse()?))
-        } else if lookahead.peek(Token![+]) {
-            Ok(Expr::Op(input.parse()?))
-        } else if lookahead.peek(Token![?]) {
-            Ok(Expr::Op(input.parse()?))
-        } else if lookahead.peek(Token![#]) {
+        } else if 
+            lookahead.peek(Token![*])
+            || lookahead.peek(Token![/])
+            || lookahead.peek(Token![=])
+            || lookahead.peek(Token![+])
+            || lookahead.peek(Token![?])
+            || lookahead.peek(Token![#]) {
             Ok(Expr::Op(input.parse()?))
         } else {
             Err(lookahead.error())

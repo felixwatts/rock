@@ -30,7 +30,7 @@ fn parse_noun(input: &str) -> IResult<&str, Noun> {
 fn parse_atom(input: &str) -> IResult<&str, Noun> {
     let (remaining_input, decimal_chars) = many_m_n(1, 1024, one_of("0123456789")).parse(input)?;
     let decimal_str: String = decimal_chars.into_iter().collect();
-    let val = u32::from_str_radix(&decimal_str, 10).unwrap();
+    let val = decimal_str.parse::<u32>().unwrap();
     Ok((remaining_input, Noun::Atom(val)))
 }
 
