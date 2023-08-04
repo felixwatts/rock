@@ -4,6 +4,7 @@ use nom::bytes::complete::take_while;
 use nom::multi::many_m_n;
 use nom::Parser;
 use nom::{
+    error::{Error, ErrorKind},
     branch::alt, bytes::complete::tag, character::complete::one_of, multi::many0,
     sequence::delimited, IResult,
 };
@@ -28,9 +29,11 @@ fn parse_noun(input: &str) -> IResult<&str, Noun> {
 }
 
 fn parse_atom(input: &str) -> IResult<&str, Noun> {
-    let (remaining_input, decimal_chars) = many_m_n(1, 1024, one_of("0123456789")).parse(input)?;
+    let (remaining_input, decimal_chars) = many_m_n(1, 11, one_of("0123456789")).parse(input)?;
     let decimal_str: String = decimal_chars.into_iter().collect();
-    let val = decimal_str.parse::<u32>().unwrap();
+    let val = decimal_str
+        .parse::<u32>()
+        .map_err(|_| nom::Err::Failure(Error::<&str>::new(input, ErrorKind::Digit)))?;
     Ok((remaining_input, Noun::Atom(val)))
 }
 
@@ -73,5 +76,8 @@ mod test {
         let (remaining_input, ast) = parse_noun("[1 2 3]").unwrap();
         assert_eq!("", remaining_input);
         assert_eq!(Noun::cell(Noun::atom(1), Noun::cell(Noun::atom(2), Noun::atom(3))), ast);
+
+        let result: Result<Noun, String> = "4294967296".try_into(); // too big for u32
+        result.expect_err("Parse should have failed");
     }
 }
